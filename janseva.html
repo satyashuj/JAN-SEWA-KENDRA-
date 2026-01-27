@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>Jan Seva Kendra</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#fff8dc;}
+header{background:#f4b400;padding:15px;text-align:center;font-size:22px;}
+.box{
+  width:340px;margin:30px auto;background:#ffeb99;
+  padding:20px;border-radius:10px;display:none;
+}
+input,select,button{
+  width:100%;padding:10px;margin:8px 0;
+}
+button{
+  background:#f4b400;border:none;font-weight:bold;cursor:pointer;
+}
+h2{text-align:center;}
+a{display:block;text-align:center;color:#000;cursor:pointer;}
+</style>
+</head>
+
+<body>
+
+<header>Jan Seva Kendra – Government Service Portal (Demo)</header>
+
+<!-- ================= REGISTER ================= -->
+<div class="box" id="registerBox">
+<h2>Customer Registration</h2>
+<input id="rname" placeholder="Full Name">
+<input id="remail" placeholder="Email">
+<input id="rpass" type="password" placeholder="Password">
+<button onclick="register()">Create Account</button>
+<a onclick="show('loginBox')">Already Registered? Login</a>
+</div>
+
+<!-- ================= LOGIN ================= -->
+<div class="box" id="loginBox">
+<h2>Customer Login</h2>
+<input id="lemail" placeholder="Email">
+<input id="lpass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<a onclick="show('registerBox')">Create New Account</a>
+<a onclick="show('adminLogin')">Admin Login</a>
+</div>
+
+<!-- ================= APPLY ================= -->
+<div class="box" id="applyBox">
+<h2>Apply for Document</h2>
+
+<select id="service">
+<option>PAN Card</option>
+<option>Income Certificate</option>
+<option>Birth Certificate</option>
+</select>
+
+<label>ID Proof Upload</label>
+<input type="file">
+
+<button onclick="apply()">Submit Application</button>
+</div>
+
+<!-- ================= STATUS ================= -->
+<div class="box" id="statusBox">
+<h2>Application Status</h2>
+<p id="statusText"></p>
+<a id="downloadLink" download style="display:none">Download Final Document</a>
+<button onclick="logout()">Logout</button>
+</div>
+
+<!-- ================= ADMIN LOGIN ================= -->
+<div class="box" id="adminLogin">
+<h2>Admin Login</h2>
+<input id="adminUser" placeholder="Username">
+<input id="adminPass" type="password">
+<button onclick="adminLogin()">Login</button>
+</div>
+
+<!-- ================= ADMIN DASHBOARD ================= -->
+<div class="box" id="adminDash">
+<h2>Admin Dashboard</h2>
+<p id="adminData"></p>
+<label>Upload Final Document</label>
+<input type="file" id="finalDoc">
+<button onclick="finalUpload()">Upload & Approve</button>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.box').forEach(b=>b.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+show("registerBox");
+
+/* -------- Customer Registration -------- */
+function register(){
+  let user={
+    name:rname.value,
+    email:remail.value,
+    pass:rpass.value
+  };
+  localStorage.setItem("user",JSON.stringify(user));
+  alert("Account Created Successfully");
+  show("loginBox");
+}
+
+/* -------- Customer Login -------- */
+function login(){
+  let u=JSON.parse(localStorage.getItem("user"));
+  if(u && lemail.value==u.email && lpass.value==u.pass){
+    show("applyBox");
+  }else{
+    alert("Invalid Login");
+  }
+}
+
+/* -------- Apply Document -------- */
+function apply(){
+  let app={
+    service:service.value,
+    status:"Pending",
+    finalDoc:""
+  };
+  localStorage.setItem("application",JSON.stringify(app));
+  alert("Application Submitted");
+  show("statusBox");
+  loadStatus();
+}
+
+/* -------- Status -------- */
+function loadStatus(){
+  let app=JSON.parse(localStorage.getItem("application"));
+  statusText.innerHTML=`Service: ${app.service}<br>Status: ${app.status}`;
+  if(app.status==="Completed"){
+    downloadLink.style.display="block";
+    downloadLink.href=app.finalDoc;
+  }
+}
+
+/* -------- Admin Login -------- */
+function adminLogin(){
+  if(adminUser.value==="admin" && adminPass.value==="1234"){
+    show("adminDash");
+    let app=JSON.parse(localStorage.getItem("application"));
+    adminData.innerHTML=`Service: ${app.service}<br>Status: ${app.status}`;
+  }else{
+    alert("Invalid Admin Login");
+  }
+}
+
+/* -------- Admin Upload Final Doc -------- */
+function finalUpload(){
+  let file=finalDoc.files[0];
+  let url=URL.createObjectURL(file);
+  let app=JSON.parse(localStorage.getItem("application"));
+  app.status="Completed";
+  app.finalDoc=url;
+  localStorage.setItem("application",JSON.stringify(app));
+  alert("Document Approved & Uploaded");
+}
+
+/* -------- Logout -------- */
+function logout(){
+  show("loginBox");
+}
+</script>
+
+</body>
+</html>

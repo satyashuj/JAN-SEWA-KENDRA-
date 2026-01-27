@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Apply Service</title>
+<style>
+body{background:#fff8dc;font-family:Arial;}
+form{width:320px;margin:40px auto;background:#fff3b0;padding:20px;border-radius:8px;}
+input,select,button{width:100%;padding:10px;margin:8px 0;}
+button{background:#f4b400;border:none;font-weight:bold;}
+</style>
+
+<script>
+function submitForm(){
+  alert("Application Submitted Successfully!");
+}
+</script>
+</head>
+
+<body>
+<form onsubmit="submitForm();return false;">
+<h2>Apply Service</h2>
+<input type="text" placeholder="Name" required>
+<input type="tel" placeholder="Mobile" required>
+<select>
+<option>Select Service</option>
+<option>Aadhaar</option>
+<option>PAN</option>
+<option>Certificate</option>
+</select>
+<button>Submit</button>
+</form>
+</body>
+</html>
